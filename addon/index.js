@@ -97,6 +97,7 @@ export default Mixin.create({
       if (record) {
         // record.unloadRecord();
         record.set('id', json.id);
+        record._internalModel.set('id', json.id);
         record._internalModel.flushChangedAttributes();
         record._internalModel.adapterWillCommit();
         store.didSaveRecord(record._internalModel);
