@@ -1,8 +1,6 @@
 # ember-data-save-relationships
 
-## NOTE: I am not maintaining this add-on anymore. It was a fun exercise but never ended up using it in production environments.
-
-### Please follow the official repo at: https://github.com/laborvoices/ember-data-save-relationships
+## NOTE: I have taken over maintenance from frank06/ember-data-save-relationships
 
 ------
 
