@@ -1,6 +1,8 @@
+import Mixin from '@ember/object/mixin';
 import Ember from 'ember';
+import { singularize } from 'ember-inflector';
 
-export default Ember.Mixin.create({
+export default Mixin.create({
 
   serializeRelationship(snapshot, data, rel) {
     const relKind = rel.kind;
@@ -55,7 +57,7 @@ export default Ember.Mixin.create({
 
 
     for (let relationshipId in serialized.data.relationships) {
-      if (!!this.get('_visitedRecordIds')[relationshipId])
+      if (this.get('_visitedRecordIds')[relationshipId])
       {
         delete serialized.data.relationships[relationshipId];
       }
@@ -86,7 +88,7 @@ export default Ember.Mixin.create({
   updateRecord(json, store) {
     if (json.attributes !== undefined && json.attributes.__id__ !== undefined)
     {
-      json.type = Ember.String.singularize(json.type);
+      json.type = singularize(json.type);
       
       const record = store.peekAll(json.type)
         .filterBy('currentState.stateName', "root.loaded.created.uncommitted")
