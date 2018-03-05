@@ -12,18 +12,17 @@ export default Mixin.create({
 
       data.relationships = data.relationships || {};
       const key = this.keyForRelationship(relKey, relKind, 'serialize');
-      data.relationships[key] = data.relationships[key] || {};
+      const relationship = data.relationships[key] = data.relationships[key] || {};
       
       if (relKind === "belongsTo") {
-        data.relationships[key].data = this.serializeRecord(snapshot.belongsTo(relKey));
+        relationship.data = this.serializeRecord(snapshot.belongsTo(relKey));
+      } else if (relKind === "hasMany") {
+        const hasMany = snapshot.hasMany(relKey);
+        if (hasMany !== undefined) {
+          relationship.data = hasMany.map(this.serializeRecord.bind(this));
+        }
       }
-      
-      if (relKind === "hasMany" && typeof(snapshot.hasMany(relKey)) !== "undefined") {
-        data.relationships[key].data = snapshot.hasMany(relKey).map(this.serializeRecord.bind(this));
-      }
-      
     }
-
   },
   
   serialize (snapshot, options) {
