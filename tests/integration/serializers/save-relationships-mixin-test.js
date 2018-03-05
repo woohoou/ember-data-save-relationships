@@ -1,3 +1,5 @@
+import { run } from '@ember/runloop';
+import EmberObject from '@ember/object';
 import Ember from 'ember';
 import QUnit from 'qunit';
 import { module, test } from 'qunit';
@@ -14,7 +16,7 @@ module('serializers/save-relationships-mixin', {
     
     registry = new Ember.Registry();
 
-    const Owner = Ember.Object.extend(Ember._RegistryProxyMixin, Ember._ContainerProxyMixin);
+    const Owner = EmberObject.extend(Ember._RegistryProxyMixin, Ember._ContainerProxyMixin);
     const owner = Owner.create({
       __registry__: registry
     });
@@ -68,7 +70,7 @@ module('serializers/save-relationships-mixin', {
   },
   
   afterEach() {
-    Ember.run(store, 'destroy');
+    run(store, 'destroy');
   }
 
 });
@@ -97,7 +99,7 @@ test("serialize artist with embedded albums (with ID)", function(assert) {
   const serializer = store.serializerFor("artist");
   let artistJSON;
   
-  Ember.run(function() {
+  run(function() {
     
     const artist = store.createRecord('artist', { name: "Radiohead" });
     const album1 = store.createRecord('album', { name: "Kid A" });
@@ -159,7 +161,7 @@ test("serialize artist with embedded album (with ID) with embedded tracks", func
   
   let artist, album1, track1, track2, track3;
 
-  Ember.run(function() {
+  run(function() {
     
     artist = store.createRecord('artist', { name: "Radiohead" });
     album1 = store.createRecord('album', { name: "Kid A" });
@@ -216,7 +218,7 @@ test("serialize model with no attributes", function(assert) {
   const serializer = store.serializerFor("simple-model-container");
   let model, container, simpleModelContainerJSON;
   
-  Ember.run(function() {
+  run(function() {
     
     model = store.createRecord('simple-model');
     container = store.createRecord('simple-model-container');
@@ -255,7 +257,7 @@ test("serialize artist without embedded albums", function(assert) {
   const serializer = store.serializerFor("artist");
   let artistJSON;
 
-  Ember.run(function() {
+  run(function() {
 
     const artist = store.createRecord('artist', { name: "Radiohead" });
     const album1 = store.createRecord('album', { name: "Kid A" });
@@ -293,7 +295,7 @@ test("serialize artist with embedded contact person and albums (with ID)", funct
   const serializer = store.serializerFor("artist");
   let artistJSON, album1, album2, album3, contactPerson;
   
-  Ember.run(function() {
+  run(function() {
     
     contactPerson = store.createRecord('contactPerson', { name: "Brian Message" });
     const artist = store.createRecord('artist', { name: "Radiohead", contactPerson });
@@ -351,7 +353,7 @@ test("serialize artist with embedded albums (with and without ID)", function(ass
   const serializer = store.serializerFor("artist");
   let artistJSON;
   
-  Ember.run(function() {
+  run(function() {
     
     const artist = store.createRecord('artist', { name: "Radiohead" });
     const album1 = store.createRecord('album', { id: 1, name: "Kid A" });
@@ -383,7 +385,7 @@ test("serialize album with embedded belongs-to artist (without ID)", function(as
   const serializer = store.serializerFor("album");
   let albumJSON;
   
-  Ember.run(function() {
+  run(function() {
     
     const album = store.createRecord('album', { name: "Kid A" });
     const artist = store.createRecord('artist', { name: "Radiohead" });
@@ -408,16 +410,15 @@ test("normalize artist + album", function(assert) {
   registry.register('serializer:album', DS.JSONAPISerializer.extend(SaveRelationshipsMixin));
 
   const serializer = store.serializerFor("artist");
-  let artistJSON;
   
-  Ember.run(function() {
+  run(function() {
     
     const artist = store.createRecord('artist', { name: "Radiohead" });
     const album1 = store.createRecord('album', { name: "Kid A" });
     const album2 = store.createRecord('album', { id: "2", name: "Kid B" });
     artist.get('albums').pushObjects([album1, album2]);
   
-    artistJSON = serializer.serialize(artist._createSnapshot());
+    serializer.serialize(artist._createSnapshot());
     
     const serverJSON = { data: 
      { id: "1",
@@ -452,18 +453,17 @@ test("normalize artist + album when album is lazy loaded", function(assert) {
   registry.register('serializer:album', DS.JSONAPISerializer.extend(SaveRelationshipsMixin));
 
   const serializer = store.serializerFor("artist");
-  let artistJSON;
 
   let error = null;
   
-  Ember.run(function() {
+  run(function() {
     
     const artist = store.createRecord('artist', { name: "Radiohead" });
     const album1 = store.createRecord('album', { name: "Kid A" });
     const album2 = store.createRecord('album', { id: "2", name: "Kid B" });
     artist.get('albums').pushObjects([album1, album2]);
   
-    artistJSON = serializer.serialize(artist._createSnapshot());
+    serializer.serialize(artist._createSnapshot());
     
     const serverJSON = { 
       data: 
@@ -507,16 +507,15 @@ test("normalize artist + album when data is included", function(assert) {
   registry.register('serializer:album', DS.JSONAPISerializer.extend(SaveRelationshipsMixin));
 
   const serializer = store.serializerFor("artist");
-  let artistJSON;
   
-  Ember.run(function() {
+  run(function() {
     
     const artist = store.createRecord('artist', { name: "Radiohead" });
     const album1 = store.createRecord('album', { name: "Kid A" });
     const album2 = store.createRecord('album', { id: "2", name: "Kid B" });
     artist.get('albums').pushObjects([album1, album2]);
   
-    artistJSON = serializer.serialize(artist._createSnapshot());
+    serializer.serialize(artist._createSnapshot());
     
     const serverJSON = { 
       data: 
@@ -579,16 +578,15 @@ test("normalize artist + album when data is included does not duplicate models",
   registry.register('serializer:album', DS.JSONAPISerializer.extend(SaveRelationshipsMixin));
 
   const serializer = store.serializerFor("artist");
-  let artistJSON;
   
-  Ember.run(function() {
+  run(function() {
     
     const artist = store.createRecord('artist', { id: "1", name: "Radiohead" });
     const album1 = store.createRecord('album', { name: "Kid A" });
     const album2 = store.createRecord('album', { id: "2", name: "Kid B" });
     artist.get('albums').pushObjects([album1, album2]);
   
-    artistJSON = serializer.serialize(artist._createSnapshot());
+    serializer.serialize(artist._createSnapshot());
     
     const serverJSON = { 
       data: 
@@ -647,18 +645,17 @@ test("normalize artist + album when artist's albums relationship is lazy loaded 
   registry.register('serializer:album', DS.JSONAPISerializer.extend(SaveRelationshipsMixin));
 
   const serializer = store.serializerFor("artist");
-  let artistJSON;
 
   let error = null;
   
-  Ember.run(function() {
+  run(function() {
     
     const artist = store.createRecord('artist', { name: "Radiohead" });
     const album1 = store.createRecord('album', { name: "Kid A" });
     const album2 = store.createRecord('album', { id: "2", name: "Kid B" });
     artist.get('albums').pushObjects([album1, album2]);
   
-    artistJSON = serializer.serialize(artist._createSnapshot());
+    serializer.serialize(artist._createSnapshot());
     
     const serverJSON = { 
       data: 
@@ -739,11 +736,10 @@ test("normalize artist with embedded album (with ID) with embedded tracks", func
   }));
 
   const serializer = store.serializerFor("artist");
-  let artistJSON;
   
   let artist, album1, track1, track2, track3;
 
-  Ember.run(function() {
+  run(function() {
     
     artist = store.createRecord('artist', { name: "Radiohead" });
     album1 = store.createRecord('album', { name: "Kid A" });
@@ -759,7 +755,7 @@ test("normalize artist with embedded album (with ID) with embedded tracks", func
 
     assert.equal(album1.get('tracks.length'), 3);
     
-    artistJSON = serializer.serialize(artist._createSnapshot());
+    serializer.serialize(artist._createSnapshot());
 
     const serverJSON = 
     {
@@ -846,11 +842,10 @@ test("normalize artist with embedded album (with ID) with embedded tracks when d
   }));
 
   const serializer = store.serializerFor("artist");
-  let artistJSON;
   
   let artist, album1, track1, track2, track3;
 
-  Ember.run(function() {
+  run(function() {
     
     artist = store.createRecord('artist', { name: "Radiohead" });
     album1 = store.createRecord('album', { name: "Kid A" });
@@ -866,7 +861,7 @@ test("normalize artist with embedded album (with ID) with embedded tracks when d
 
     assert.equal(album1.get('tracks.length'), 3);
     
-    artistJSON = serializer.serialize(artist._createSnapshot());
+    serializer.serialize(artist._createSnapshot());
 
     const serverJSON = 
     {
@@ -976,7 +971,7 @@ test("normalize album belongs-to artist", function(assert) {
   const serializer = store.serializerFor("album");
   let albumJSON;
   
-  Ember.run(function() {
+  run(function() {
     
     const artist = store.createRecord('artist', { name: "Radiohead" });
     const album = store.createRecord('album', { name: "Kid A", artist });
@@ -1032,7 +1027,7 @@ test("normalize album belongs-to artist when data is included", function(assert)
   const serializer = store.serializerFor("album");
   let albumJSON;
   
-  Ember.run(function() {
+  run(function() {
     
     const artist = store.createRecord('artist', { name: "Radiohead" });
     const album = store.createRecord('album', { name: "Kid A", artist });
@@ -1096,7 +1091,7 @@ test("normalize album belongs-to artist when recursive data is included", functi
   const serializer = store.serializerFor("album");
   let albumJSON;
   
-  Ember.run(function() {
+  run(function() {
     
     const artist = store.createRecord('artist', { name: "Radiohead" });
     const album = store.createRecord('album', { name: "Kid A", artist });
