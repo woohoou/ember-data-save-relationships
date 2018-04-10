@@ -51,7 +51,7 @@ More info: http://emberigniter.com/saving-models-relationships-json-api/
 
 ## Installation
 
-* `ember install ember-data-save-relationships`
+* `npm install --save-dev 'laborvoices/ember-data-save-relationships#master'`
 
 ## Notes
 
