@@ -111,4 +111,4 @@ More info: http://emberigniter.com/saving-models-relationships-json-api/
 
 ## Issues
 
-Please file at https://github.com/frank06/ember-data-save-relationships/issues
+Please file at https://github.com/laborvoices/ember-data-save-relationships/issues
