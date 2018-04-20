@@ -1,6 +1,6 @@
 {
   "name": "ember-data-save-relationships",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Save embedded JSON API relationships",
   "keywords": [
     "ember-addon"
