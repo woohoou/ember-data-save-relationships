@@ -46,6 +46,7 @@ export default Mixin.create({
       serialized.data.id = obj.id;
       this.get('_visitedRecordIds')[obj.id] = {};
     } else {
+      serialized.data.id = '';
       if (!serialized.data.attributes)
       {
         serialized.data.attributes = {};
