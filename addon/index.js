@@ -17,7 +17,7 @@ export default Mixin.create({
       if (relKind === "belongsTo") {
         relationship.data = this.serializeRecord(snapshot.belongsTo(relKey));
       } else if (relKind === "hasMany") {
-        data.relationships[key].data = []; // provide a default empty value
+        relationship.data = []; // provide a default empty value
         const hasMany = snapshot.hasMany(relKey);
         if (hasMany !== undefined) {
           relationship.data = hasMany.map(this.serializeRecord.bind(this));
