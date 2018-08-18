@@ -7,16 +7,17 @@ export default Mixin.create({
   serializeRelationship(snapshot, data, rel) {
     const relKind = rel.kind;
     const relKey = rel.key;
-    
+
     if (data && this.get(`attrs.${relKey}.serialize`) === true) {
 
       data.relationships = data.relationships || {};
       const key = this.keyForRelationship(relKey, relKind, 'serialize');
       const relationship = data.relationships[key] = data.relationships[key] || {};
-      
+
       if (relKind === "belongsTo") {
         relationship.data = this.serializeRecord(snapshot.belongsTo(relKey));
       } else if (relKind === "hasMany") {
+        relationship.data = []; // provide a default empty value
         const hasMany = snapshot.hasMany(relKey);
         if (hasMany !== undefined) {
           relationship.data = hasMany.map(this.serializeRecord.bind(this));
@@ -24,7 +25,7 @@ export default Mixin.create({
       }
     }
   },
-  
+
   serialize (snapshot, options) {
     if (!(options && options.__isSaveRelationshipsMixinCallback))
     {
@@ -39,7 +40,7 @@ export default Mixin.create({
     if (!obj) {
       return null;
     }
-    
+
     const serialized = obj.serialize({__isSaveRelationshipsMixinCallback: true});
 
     if (obj.id) {
@@ -70,26 +71,26 @@ export default Mixin.create({
 
     // // do not allow embedded relationships
     // delete serialized.data.relationships;
-  
+
     return serialized.data;
-  
+
   },
-  
+
   serializeHasMany() {
     this._super(...arguments);
     this.serializeRelationship(...arguments);
   },
-  
+
   serializeBelongsTo() {
     this._super(...arguments);
     this.serializeRelationship(...arguments);
   },
-  
+
   updateRecord(json, store) {
     if (json.attributes !== undefined && json.attributes.__id__ !== undefined)
     {
       json.type = singularize(json.type);
-      
+
       const record = store.peekAll(json.type)
         .filterBy('currentState.stateName', "root.loaded.created.uncommitted")
         .findBy('_internalModel.' + Ember.GUID_KEY, json.attributes.__id__);
@@ -112,7 +113,7 @@ export default Mixin.create({
 
   normalizeSaveResponse(store, modelName, obj) {
     const rels = obj.data.relationships || [];
-    
+
     let included = {};
     if (obj.included)
     {
