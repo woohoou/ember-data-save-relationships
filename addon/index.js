@@ -52,8 +52,8 @@ export default Mixin.create({
       {
         serialized.data.attributes = {};
       }
-      serialized.data.attributes['tempId'] = obj.record.get('_internalModel')[Ember.GUID_KEY];
-      this.get('_visitedRecordIds')[serialized.data.attributes['tempId']] = {};
+      serialized.data.attributes['emberid'] = obj.record.get('_internalModel')[Ember.GUID_KEY];
+      this.get('_visitedRecordIds')[serialized.data.attributes['emberid']] = {};
     }
 
 
@@ -87,13 +87,13 @@ export default Mixin.create({
   },
 
   updateRecord(json, store) {
-    if (json.attributes !== undefined && json.attributes['tempId'] !== undefined)
+    if (json.attributes !== undefined && json.attributes['emberid'] !== undefined)
     {
       json.type = singularize(json.type);
 
       const record = store.peekAll(json.type)
         .filterBy('currentState.stateName', "root.loaded.created.uncommitted")
-        .findBy('_internalModel.' + Ember.GUID_KEY, json.attributes['tempId']);
+        .findBy('_internalModel.' + Ember.GUID_KEY, json.attributes['emberid']);
 
       if (record) {
         // record.unloadRecord();
